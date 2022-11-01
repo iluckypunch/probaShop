@@ -1,16 +1,23 @@
 package com.example.probashop.presentation
 
-import android.util.Log
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.example.probashop.R
 import com.example.probashop.domain.ShopItem
 
 @Suppress("UNUSED_EXPRESSION")
-class ShopListAdapter : ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCallback()) {
+class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
 
-    private var count = 0
+    var shopList = listOf<ShopItem>()
+        @SuppressLint("NotifyDataSetChanged")
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
 
@@ -27,8 +34,7 @@ class ShopListAdapter : ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCa
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-        Log.d("ShopListAdapter", "onBindViewHolder count: ${++count}")
-        val shopItem = getItem(position)
+        val shopItem = shopList[position]
         holder.tvName.text = shopItem.name
         holder.tvCount.text = shopItem.count.toString()
         holder.view.setOnLongClickListener {
@@ -40,9 +46,18 @@ class ShopListAdapter : ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCa
         }
     }
 
+    override fun getItemCount(): Int {
+        return shopList.size
+    }
+
     override fun getItemViewType(position: Int): Int {
-        val item = getItem(position)
+        val item = shopList[position]
         return if (item.enable) VIEW_TYPE_ENABLED else VIEW_TYPE_DISABLED
+    }
+
+    class ShopItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val tvName = view.findViewById<TextView>(R.id.tv_name)
+        val tvCount = view.findViewById<TextView>(R.id.tv_count)
     }
 
 
@@ -50,6 +65,6 @@ class ShopListAdapter : ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCa
         const val VIEW_TYPE_ENABLED = 1
         const val VIEW_TYPE_DISABLED = 0
 
-        const val MAX_POOL_SIZE = 30
+        const val MAX_POOL_SIZE = 5
     }
 }
