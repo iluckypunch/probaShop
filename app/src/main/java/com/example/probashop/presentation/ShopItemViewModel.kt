@@ -23,8 +23,17 @@ class ShopItemViewModel : ViewModel() {
     val errorInputCount: LiveData<Boolean>
         get() = _errorInputCount
 
+    private val _shopItem = MutableLiveData<ShopItem>()
+    val shopItem: LiveData<ShopItem>
+        get() = _shopItem
+
+    private val _mayCloseActivity = MutableLiveData<Unit>()
+    val mayCloseActivity: LiveData<Unit>
+        get() = _mayCloseActivity
+
     fun getShopItem(shopItemId: Int) {
         val item = getShopItemUseCase.getShopItem(shopItemId)
+        _shopItem.value = item
     }
 
     fun addShopItem(inputName: String?, inputCount: String?) {
@@ -34,6 +43,7 @@ class ShopItemViewModel : ViewModel() {
         if (fieldsValid) {
             val shopItem = ShopItem(name, count, true)
             addShopItemUseCase.addShopItem(shopItem)
+            closeActivity()
         }
     }
 
@@ -42,8 +52,11 @@ class ShopItemViewModel : ViewModel() {
         val count = parseCount(inputCount)
         val fieldsValid = validateInput(name, count)
         if (fieldsValid) {
-            val shopItem = ShopItem(name, count, true) // TODO: refactor this function
-            editShopItemUseCase.editShopItem(shopItem)
+            _shopItem.value?.let {
+                val item = it.copy(name = name, count = count)
+                editShopItemUseCase.editShopItem(item)
+                closeActivity()
+            }
         }
     }
 
@@ -63,11 +76,11 @@ class ShopItemViewModel : ViewModel() {
         var result = true
         if (name.isBlank()) {
             _errorInputName.value = true
-            result = false // TODO: show error input name
+            result = false
         }
         if (count <= nullInputCount) {
             _errorInputCount.value = true
-            result = false // TODO: show error input count
+            result = false
         }
         return result
     }
@@ -78,5 +91,9 @@ class ShopItemViewModel : ViewModel() {
 
     private fun resetErrorInputCount() {
         _errorInputCount.value = false
+    }
+
+    private fun closeActivity() {
+        _mayCloseActivity.value = Unit
     }
 }
