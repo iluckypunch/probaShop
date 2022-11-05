@@ -6,8 +6,11 @@ import com.example.probashop.R
 
 class ShopItemActivity : AppCompatActivity() {
 
+    private lateinit var viewModel: ShopItemViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_shop_item)
+        setContentView(R.layout.activity_shop_item) // TODO: Исправить это
+        viewModel.errorInputName.value = false
     }
 }
