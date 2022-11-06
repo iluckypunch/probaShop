@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.probashop.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +22,11 @@ class MainActivity : AppCompatActivity() {
         viewModel.shopList.observe(this) {
             shopListAdapter.submitList(it)
         }
+        val buttonAddShopItem = findViewById<FloatingActionButton>(R.id.button_add_shop_item)
+        buttonAddShopItem.setOnClickListener {
+            val intent = ShopItemActivity.newShopItemIntent(this)
+            startActivity(intent)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -29,12 +35,10 @@ class MainActivity : AppCompatActivity() {
             shopListAdapter = ShopListAdapter()
             adapter = shopListAdapter
             recycledViewPool.setMaxRecycledViews(
-                ShopListAdapter.VIEW_TYPE_ENABLED,
-                ShopListAdapter.MAX_POOL_SIZE
+                ShopListAdapter.VIEW_TYPE_ENABLED, ShopListAdapter.MAX_POOL_SIZE
             )
             recycledViewPool.setMaxRecycledViews(
-                ShopListAdapter.VIEW_TYPE_DISABLED,
-                ShopListAdapter.MAX_POOL_SIZE
+                ShopListAdapter.VIEW_TYPE_DISABLED, ShopListAdapter.MAX_POOL_SIZE
             )
         }
         setupLongClickListener()
@@ -44,8 +48,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupSwipeListener(rvShopList: RecyclerView) {
         val callback = object : ItemTouchHelper.SimpleCallback(
-            0,
-            ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
+            0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
         ) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -68,6 +71,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupClickListener() {
         shopListAdapter.onShopItemClickListener = {
             Log.d("LOHPOZORNIY", it.toString())
+            val intent = ShopItemActivity.editShopItemIntent(this, it.id)
+            startActivity(intent)
         }
     }
 
