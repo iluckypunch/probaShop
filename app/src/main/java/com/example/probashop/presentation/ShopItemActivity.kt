@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.probashop.R
 import com.example.probashop.domain.ShopItem
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
     private var screenMode = UNKNOWN_MODE
     private var shopItemId = ShopItem.UNDEFINED_ID
@@ -19,6 +19,10 @@ class ShopItemActivity : AppCompatActivity() {
         if (savedInstanceState == null){
             launchScreenMode()
         }
+    }
+
+    override fun onEditingFinished() {
+        finish()
     }
 
     private fun launchScreenMode() {
