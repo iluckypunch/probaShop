@@ -9,14 +9,6 @@ import com.example.probashop.domain.ShopItem
 
 class ShopItemActivity : AppCompatActivity() {
 
-//    private lateinit var viewModel: ShopItemViewModel
-//
-//    private lateinit var tilName: TextInputLayout
-//    private lateinit var tilCount: TextInputLayout
-//    private lateinit var etName: EditText
-//    private lateinit var etCount: EditText
-//    private lateinit var buttonSave: Button
-//
     private var screenMode = UNKNOWN_MODE
     private var shopItemId = ShopItem.UNDEFINED_ID
 
@@ -24,88 +16,22 @@ class ShopItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
         parseIntent()
-//        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-//        initViews()
-//        addTextChangeListeners()
-        launchScreenMode()
-//        observeViewModels()
+        if (savedInstanceState == null){
+            launchScreenMode()
+        }
     }
 
-//    private fun observeViewModels() {
-//        viewModel.errorInputCount.observe(this) {
-//            val message = if (it) {
-//                getString(R.string.error_input_count)
-//            } else {
-//                null
-//            }
-//            tilCount.error = message
-//        }
-//        viewModel.errorInputName.observe(this) {
-//            val message = if (it) {
-//                getString(R.string.error_input_name)
-//            } else {
-//                null
-//            }
-//            tilName.error = message
-//        }
-//        viewModel.mayCloseActivity.observe(this) {
-//            finish()
-//        }
-//    }
-//
     private fun launchScreenMode() {
         val fragment = when (screenMode) {
             EDIT_MODE -> ShopItemFragment.newInstanceEditItem(shopItemId)
             ADD_MODE -> ShopItemFragment.newInstanceAddItem()
-            else -> throw RuntimeException("Unknown screen mode: $screenMode    ")
+            else -> throw RuntimeException("Unknown screen mode: $screenMode")
         }
     supportFragmentManager.beginTransaction()
-        .add(R.id.shop_item_container, fragment)
+        .replace(R.id.shop_item_container, fragment)
         .commit()
     }
-//
-//    private fun addTextChangeListeners() {
-//        etName.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//            }
-//
-//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                viewModel.resetErrorInputName()
-//            }
-//
-//            override fun afterTextChanged(p0: Editable?) {
-//            }
-//        })
-//        etCount.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//            }
-//
-//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                viewModel.resetErrorInputCount()
-//            }
-//
-//            override fun afterTextChanged(p0: Editable?) {
-//            }
-//        })
-//    }
-//
-//    private fun launchEditMode() {
-//        viewModel.getShopItem(shopItemId)
-//        viewModel.shopItem.observe(this) {
-//            etName.setText(it.name)
-//            etCount.setText(it.count.toString())
-//        }
-//        buttonSave.setOnClickListener {
-//            viewModel.editShopItem(etName.text?.toString(), etCount.text?.toString())
-//        }
-//    }
-//
-//    private fun launchAddMode() {
-//        buttonSave.setOnClickListener {
-//            viewModel.addShopItem(etName.text?.toString(), etCount.text?.toString())
-//        }
-//    }
-//
+
     private fun parseIntent() {
         if (!intent.hasExtra(EXTRA_SCREEN_MODE)) {
             throw RuntimeException("Param screen mode is absent")
@@ -122,14 +48,6 @@ class ShopItemActivity : AppCompatActivity() {
             shopItemId = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
         }
     }
-//
-//    private fun initViews() {
-//        tilName = findViewById(R.id.til_name)
-//        tilCount = findViewById(R.id.til_count)
-//        etName = findViewById(R.id.et_name)
-//        etCount = findViewById(R.id.et_count)
-//        buttonSave = findViewById(R.id.save_button)
-//    }
 
     companion object {
         private const val EXTRA_SCREEN_MODE = "extra_mode"
@@ -137,8 +55,6 @@ class ShopItemActivity : AppCompatActivity() {
         private const val ADD_MODE = "add_mode"
         private const val EDIT_MODE = "edit_mode"
         private const val UNKNOWN_MODE = ""
-
-
 
         fun newShopItemIntent(context: Context): Intent {
             val intent = Intent(context, ShopItemActivity::class.java)
